@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const app = require("./app")
+const mongoose = require("mongoose")
 
 const port = process.env.port || 3000
 

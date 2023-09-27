@@ -3,6 +3,7 @@
 // THIRD PARTY PACKAGE/MODULE
 const express = require("express")
 const morgan = require("morgan")
+const swaggerUi = require("swagger-ui-express")
 
 // OUR OWN PACKAGE/MODULE
 const tourRouter = require("./routes/tourRoutes")
@@ -14,6 +15,19 @@ const app = express()
 // middleware dari express
 app.use(express.json())
 app.use(morgan("dev"))
+
+const swaggerDocument = yaml.load(
+  fs.readFileSync(
+    "./swagger/swagger.yaml",
+    "utf-8"
+  )
+)
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+)
 
 // biar bisa baca static file
 app.use(express.static(`${__dirname}/public`))
