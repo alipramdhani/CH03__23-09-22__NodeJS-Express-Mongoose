@@ -15,6 +15,9 @@ const app = express()
 app.use(express.json())
 app.use(morgan("dev"))
 
+// biar bisa baca static file
+app.use(express.static(`${__dirname}/public`))
+
 // // OUR OWN MIDDLEWARE
 // app.use((req, res, next) => {
 //   console.log(

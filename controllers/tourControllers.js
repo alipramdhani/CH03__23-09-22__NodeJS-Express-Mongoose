@@ -1,4 +1,5 @@
 const fs = require("fs")
+const Tour = require("../models/tourModel")
 
 // baca data dari file json
 
@@ -146,6 +147,111 @@ const removeTour = (req, res) => {
   )
 }
 
+const createTourModel = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body) // Membuat tour baru dengan data dari req.body
+    res.status(201).json({
+      data: {
+        tour: newTour,
+      },
+    })
+  } catch (err) {
+    console.log(err)
+    res.status(400).json({
+      status: "failed",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalaha
+    })
+  }
+}
+
+const getAllToursModels = async (req, res) => {
+  try {
+    const tours = await Tour.find()
+    res.status(200).json({
+      status: "success",
+      requestTime: req.requestTime,
+      data: {
+        tours,
+      },
+    })
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalahan
+    })
+  }
+}
+
+const getTourByIdModel = async (req, res) => {
+  try {
+    const tour = await Tour.findById(
+      req.params.id
+    )
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    })
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalahan
+    })
+  }
+}
+
+const editTourModels = async (req, res) => {
+  try {
+    const id = req.params.id
+    const updateTour =
+      await Tour.findByIdAndUpdate(id, req.body, {
+        new: true,
+      })
+    if (!updateTour) {
+      return res.status(400).json({
+        status: 400,
+        message: "Id Not Found",
+      })
+    }
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: updateTour,
+      },
+    })
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    })
+  }
+}
+
+const removeTourModel = async (req, res) => {
+  try {
+    const id = req.params.id
+    const tour = await Tour.findByIdAndDelete(id)
+    if (!tour) {
+      return res.status(400).json({
+        status: "failed",
+        message: "id not found",
+        data: null,
+      })
+    }
+    res.status(200).json({
+      status: "success",
+      message: `success delete id ${id}`,
+      data: null,
+    })
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    })
+  }
+}
+
 module.exports = {
   getAllTours,
   getTourById,
@@ -154,4 +260,9 @@ module.exports = {
   removeTour,
   checkId,
   checkBody,
+  createTourModel,
+  getAllToursModels,
+  getTourByIdModel,
+  editTourModels,
+  removeTourModel,
 }
